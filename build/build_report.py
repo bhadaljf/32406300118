@@ -84,13 +84,14 @@ set_cell(t1.cell(0,3),'软件工程 软件243',False,True)
 set_cell(t1.cell(0,5),'封媛',False,True)
 set_cell(t1.cell(0,7),'32406300118',False,True)
 set_cell(t1.cell(1,1),'面向对象分析与设计实验',False,True)
-set_cell(t1.cell(2,1),'需求分析',False,True)
-set_cell(t1.cell(2,5),'冯元勇',False,True)
+# 第 3 行：实验项目名称的值单元格横跨第 1–5 列，指导老师的值在第 7 列
+set_cell(t1.cell(2,1),'实验一 需求分析',False,True)
+set_cell(t1.cell(2,7),'王健雄',False,True)
 t2=doc.tables[1]
 for i,v in enumerate(['32406300118','封媛','软件243','独立完成','需求分析、UML建模、文档编写与复核','','']): set_cell(t2.rows[1].cells[i],v,False,True if i<4 else False)
 for p in doc.paragraphs:
     if '开课学院及实验室：' in p.text:
-        p.text='开课学院及实验室：计算机科学与工程实验室【实验室待确认】\t2026年11月2日'
+        p.text='开课学院及实验室：电子楼416A\t2026年11月2日'
         for r in p.runs: font(r,9)
 
 # 删除示例系统主体
