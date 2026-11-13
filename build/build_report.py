@@ -93,6 +93,14 @@ set_cell(t1.cell(2,1),'实验一 需求分析',False,True)
 set_cell(t1.cell(2,7),'王健雄',False,True)
 t2=doc.tables[1]
 for i,v in enumerate(['32406300118','封媛','软件243','独立完成','需求分析、UML建模、文档编写与复核','','']): set_cell(t2.rows[1].cells[i],v,False,True if i<4 else False)
+from docx.text.paragraph import Paragraph as _P
+_note_ppr=doc.add_paragraph()
+t2._tbl.addnext(_note_ppr._p)
+_note_p=_P(_note_ppr._p, doc._body)
+_note_p.alignment=WD_ALIGN_PARAGRAPH.LEFT
+_note_r=_note_p.add_run('说明：本实验为个人独立完成，业务分工表只列本人记录；模板预留的组员空行不作填写。')
+font(_note_r,9)
+
 for p in doc.paragraphs:
     if '开课学院及实验室：' in p.text:
         p.text='开课学院及实验室：电子楼416A\t2026年11月13日'
@@ -371,24 +379,29 @@ table(['比较维度','PlantUML 文本化建模','图形化建模工具'],[
 add_p('本版四张图均以 PlantUML 完成。用例图与类图改动最频繁，文本化使每次调整都能在提交记录中定位到具体行；状态图改用横向布局后由工具自动排布，省去手工连线；顺序图的对象次序与消息编号直接写在文本里，与用例基本流程逐条对应。代价是复杂图的版面无法精确控制，需要在拆图与调参之间取舍。')
 
 heading('参考文献',1)
-add_p('[1] 王健雄, 冯元勇. 面向对象分析与设计实验指导书 V202610[Z]. 广州大学, 2026.',indent=False)
-add_p('[2] Object Management Group. OMG Unified Modeling Language Version 2.5.1[EB/OL]. https://www.omg.org/spec/UML/2.5.1, 2017.',indent=False)
-add_p('[3] PlantUML. PlantUML Language Reference Guide[EB/OL]. https://plantuml.com/, 2026.',indent=False)
+add_p('[1] 王健雄, 冯元勇. 面向对象分析与设计实验指导书 V202610[Z]. 广州大学计算机科学与网络工程学院, 2026.',indent=False)
+add_p('[2] Object Management Group. OMG Unified Modeling Language Version 2.5.1[EB/OL]. https://www.omg.org/spec/UML/2.5.1, 2017[2026-11-13].',indent=False)
+add_p('[3] PlantUML. PlantUML Language Reference Guide[EB/OL]. https://plantuml.com/, 2026[2026-11-13].',indent=False)
 
-heading('附录 A  PlantUML 源文件清单',1)
-add_p('四个模型源文件随仓库提交，仓库名为学号 32406300118，路径为 diagrams/。报告中的图 1 至图 4 由下列源文件渲染，未以截图代替模型成果。')
-table(['源文件','对应插图','内容摘要','首次提交'],[
- ['01_预约业务子系统用例图.puml','图 1','子系统边界、三名参与者、六个用例，UC02 以 include 表示依赖','6fa7c29'],
- ['02_预约业务分析类图.puml','图 2','分析类及其关联、多重性与关联端角色','6fa7c29'],
- ['03_预约申请状态图.puml','图 3','预约申请的状态划分与迁移、签到守卫条件','6fa7c29'],
- ['04_提交预约申请顺序图.puml','图 4','UC03 基本流程的消息序列与异常分支','6fa7c29'],
-], [6.0,2.2,5.6,2.0])
+happ=heading('附录 A  PlantUML 源文件清单',1); happ.paragraph_format.page_break_before=True
+add_p('四个模型源文件随仓库提交，仓库名为学号 32406300118，路径为 diagrams/；报告中的图 1 至图 4 均由下列源文件渲染。')
 add_p('渲染命令为 java -jar plantuml.jar -charset UTF-8 -tpng，可用 build/render_diagrams.ps1 一键重建；状态图与用例图在后续提交中有修订，修订说明见提交记录。')
+table(['源文件','对应插图','内容摘要','首次提交'],[
+ ['01_预约业务子系统用例图.puml','图 1','子系统边界、参与者、六个用例','6fa7c29'],
+ ['02_预约业务分析类图.puml','图 2','分析类、关联与多重性','6fa7c29'],
+ ['03_预约申请状态图.puml','图 3','状态划分、迁移与守卫条件','6fa7c29'],
+ ['04_提交预约申请顺序图.puml','图 4','UC03 消息序列与异常分支','6fa7c29'],
+], [7.0,2.0,4.8,2.0])
+
 
 # 统一新增正文的中英文字体
 for p in doc.paragraphs:
     for r in p.runs:
         if r.font.size is None: font(r)
+
+while doc.paragraphs and not doc.paragraphs[-1].text.strip() and not doc.paragraphs[-1].runs:
+    last = doc.paragraphs[-1]
+    last._p.getparent().remove(last._p)
 
 doc.core_properties.title='校园实验室预约管理系统需求分析实验报告'
 doc.core_properties.author='封媛'
