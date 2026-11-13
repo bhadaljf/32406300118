@@ -9,7 +9,7 @@ from docx.oxml.ns import qn
 
 BASE=Path(__file__).resolve().parent.parent
 REF=BASE/'build'/'assets'/'实验一模板参考.docx'
-OUT=BASE/'out'/'封媛_32406300118_面向对象实验一.docx'
+OUT=BASE/'out'/'32406300118.docx'
 DIAG=BASE/'diagrams'
 doc=Document(REF)
 
@@ -95,7 +95,7 @@ t2=doc.tables[1]
 for i,v in enumerate(['32406300118','封媛','软件243','独立完成','需求分析、UML建模、文档编写与复核','','']): set_cell(t2.rows[1].cells[i],v,False,True if i<4 else False)
 for p in doc.paragraphs:
     if '开课学院及实验室：' in p.text:
-        p.text='开课学院及实验室：电子楼416A\t2026年11月2日'
+        p.text='开课学院及实验室：电子楼416A\t2026年11月13日'
         for r in p.runs: font(r,9)
 
 # 按 V202610 指导书重写实验目的、实验器材、实验内容、要求四栏
@@ -182,9 +182,9 @@ r=p.add_run('校园实验室预约管理系统'); font(r,22,True)
 p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER
 r=p.add_run('需求分析实验报告'); font(r,20,True)
 p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER; p.paragraph_format.space_before=Pt(30)
-r=p.add_run('Version 1.0'); font(r,14,True)
+r=p.add_run('Version 1.1'); font(r,14,True)
 add_p('作者：封媛　　班级：软件243　　学号：32406300118',center=True,indent=False)
-add_p('完成日期：2026年11月2日',center=True,indent=False)
+add_p('完成日期：2026年11月13日',center=True,indent=False)
 
 def add_toc_field(paragraph):
     r=paragraph.add_run()
@@ -306,7 +306,7 @@ add_p('预约申请是本系统中状态变化最完整的业务对象。草稿�
 picture('03_预约申请状态图.png','图3 预约申请状态图',15.5)
 heading('4.4 提交预约申请顺序模型',2)
 add_p('顺序模型说明UC03基本流程中各分析对象的协作。预约界面负责接收业务信息，预约控制器组织规则校验，时段信息提供可用状态，预约申请对象保存通过校验的数据。该划分使业务规则与界面表现保持分离。')
-picture('04_提交预约申请顺序图.png','图4 提交预约申请顺序图',14.0)
+picture('04_提交预约申请顺序图.png','图4 提交预约申请顺序图',12.8)
 heading('4.5 模型一致性说明',2)
 add_p('四类模型围绕 UC03 展开。下表按用例基本流程逐条列出顺序图中的消息、接收对象与状态迁移，用于核对同一业务事实在不同模型中的表达是否可追溯。')
 table(['用例步骤','顺序图消息与序号','接收对象','状态迁移','对应类操作'],[
@@ -347,9 +347,9 @@ add_p('四类模型各自回答不同问题。用例图确定系统为谁提供�
 add_p('采用文本化建模之后，模型的修改可以按行比较，一次术语调整的影响范围能在提交记录中直接看到，这比在图形工具中逐个拖动对象更容易发现遗漏。后续进入系统设计阶段，还需在当前分析模型基础上补充体系结构、数据持久化与接口设计，不应把分析类图直接当作程序类结构。')
 
 heading('参考文献',1)
-add_p('[1] 冯元勇. 面向对象分析与设计实验指导书V20241028[Z]. 广州大学, 2024.',indent=False)
-add_p('[2] 冯元勇. 代大作业模板及写作指导[Z]. 2019.',indent=False)
-add_p('[3] Object Management Group. OMG Unified Modeling Language Version 2.5.1[EB/OL]. https://www.omg.org/spec/UML/2.5.1, 2017.',indent=False)
+add_p('[1] 王健雄, 冯元勇. 面向对象分析与设计实验指导书 V202610[Z]. 广州大学, 2026.',indent=False)
+add_p('[2] Object Management Group. OMG Unified Modeling Language Version 2.5.1[EB/OL]. https://www.omg.org/spec/UML/2.5.1, 2017.',indent=False)
+add_p('[3] PlantUML. PlantUML Language Reference Guide[EB/OL]. https://plantuml.com/, 2026.',indent=False)
 
 # 统一新增正文的中英文字体
 for p in doc.paragraphs:

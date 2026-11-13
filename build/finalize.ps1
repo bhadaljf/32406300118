@@ -1,6 +1,6 @@
 param(
-    [string]$Docx = "D:\1学习\面向对象\32406300118\out\封媛_32406300118_面向对象实验一.docx",
-    [string]$Pdf  = "D:\1学习\面向对象\32406300118\out\封媛_32406300118_面向对象实验一.pdf"
+    [string]$Docx = "D:\1学习\面向对象\32406300118\out\32406300118.docx",
+    [string]$Pdf  = "D:\1学习\面向对象\32406300118\out\32406300118.pdf"
 )
 
 $ErrorActionPreference = 'Stop'
