@@ -1,0 +1,57 @@
+@startuml
+class 用户 {
+  - 用户编号 : String
+  - 姓名 : String
+  - 身份状态 : String
+  + 查询预约() : List
+}
+
+class 实验室管理员 {
+  - 工号 : String
+  - 管理范围 : String
+  + 审核预约(申请) : 审核记录
+}
+
+class 实验室 {
+  - 实验室编号 : String
+  - 名称 : String
+  - 位置 : String
+  - 容量 : int
+  - 开放状态 : String
+  + 查询时段(日期) : List
+}
+
+class 可预约时段 {
+  - 日期 : Date
+  - 开始时间 : Time
+  - 结束时间 : Time
+  - 可预约状态 : String
+  + 检查可用性() : boolean
+}
+
+class 预约申请 {
+  - 预约编号 : String
+  - 申请时间 : DateTime
+  - 用途 : String
+  - 人数 : int
+  - 状态 : String
+  + 提交() : void
+  + 取消() : void
+  + 变更状态(新状态) : void
+}
+
+class 审核记录 {
+  - 审核编号 : String
+  - 审核时间 : DateTime
+  - 审核结果 : String
+  - 意见 : String
+  + 记录审核() : void
+}
+
+用户 "1" -- "0..*" 预约申请 : 提出 >
+实验室 "1" -- "0..*" 预约申请 : 被预约 >
+实验室 "1" -- "0..*" 可预约时段 : 开放 >
+可预约时段 "1" -- "0..*" 预约申请 : 被申请 >
+预约申请 "1" -- "0..1" 审核记录 : 对应 >
+实验室管理员 "1" -- "0..*" 审核记录 : 处理 >
+@enduml

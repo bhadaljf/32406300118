@@ -137,6 +137,10 @@ for table in doc.tables[2:]:
                 header = OxmlElement('w:tblHeader')
                 header.set(qn('w:val'), 'true')
                 trpr.append(header)
+            # 表头与紧随其后的行保持同页，避免出现只有表头落在页底的情况
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    p.paragraph_format.keep_with_next = True
 
 doc.save(PATH)
 print(PATH)

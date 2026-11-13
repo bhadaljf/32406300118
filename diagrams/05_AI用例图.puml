@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor 学生 as Student
+actor 教师 as Teacher
+actor 实验室管理员 as Admin
+actor 统一身份认证系统 as AuthSystem
+
+rectangle 预约业务子系统 {
+  usecase "提交预约申请" as UC_Submit
+  usecase "校验用户身份" as UC_Verify
+  usecase "查询可预约时段" as UC_ViewSlots
+  usecase "校验预约规则" as UC_Validate
+  usecase "生成待审核申请" as UC_Generate
+}
+
+Student --> UC_Submit
+Teacher --> UC_Submit
+AuthSystem --> UC_Verify
+
+UC_Submit ..> UC_Verify : <<include>>
+UC_Submit ..> UC_ViewSlots : <<include>>
+UC_Submit ..> UC_Validate : <<include>>
+UC_Submit ..> UC_Generate : <<include>>
+UC_Generate --> Admin : 通知
+@enduml
