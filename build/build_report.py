@@ -94,6 +94,70 @@ for p in doc.paragraphs:
         p.text='开课学院及实验室：电子楼416A\t2026年11月2日'
         for r in p.runs: font(r,9)
 
+# 按 V202610 指导书重写实验目的、实验器材、实验内容、要求四栏
+from copy import deepcopy
+
+def clone_para(tmpl, text):
+    new=deepcopy(tmpl._p)
+    runs=new.findall(qn('w:r'))
+    for r in runs[1:]: new.remove(r)
+    if not runs: raise RuntimeError('模板段落没有文本运行')
+    r=runs[0]
+    for t in r.findall(qn('w:t'))+r.findall(qn('w:br')): r.remove(t)
+    t=OxmlElement('w:t'); t.set(qn('xml:space'),'preserve'); t.text=text; r.append(t)
+    return new
+
+paras=list(doc.paragraphs)
+i_start=next(i for i,p in enumerate(paras) if p.text.strip().startswith('一、实验目的'))
+i_end=next(i for i,p in enumerate(paras) if '丁丁网上书城' in p.text)
+front=paras[i_start:i_end]
+
+def first_of(style_name, blocks):
+    return next(p for p in blocks if p.style is not None and p.style.name==style_name)
+
+t_head=paras[i_start]
+t_body=first_of('Body Text', front)
+t_item=[first_of('内容', front[i:]) for i in
+        (next(j for j,p in enumerate(front) if p.style.name=='知识点'),
+         next(j for j,p in enumerate(front) if p.text.strip().startswith('二、实验器材')),
+         next(j for j,p in enumerate(front) if p.text.strip().startswith('三、实验内容')))]
+for j,p in enumerate(front):
+    if p.text.strip().startswith('四、要求'):
+        t_req_head=p
+        t_req_item=next(q for q in front[j+1:] if q.style.name=='知识点' and '遵守纪律' in q.text)
+        break
+
+blocks=[
+ ('h',t_head,'一、实验目的'),
+ ('i0',t_item[0],'熟悉基于用例的面向对象需求分析基本方法；'),
+ ('i0',t_item[0],'熟练运用文本化建模工具 PlantUML 进行需求描述与分析；'),
+ ('i0',t_item[0],'对业务、功能、非功能和接口需求进行静态和动态的分析；'),
+ ('i0',t_item[0],'初步建立手工建模、AI 对照、批判评估的工作方式。'),
+ ('h',t_head,'二、实验器材'),
+ ('i1',t_item[1],'计算机一台；'),
+ ('i1',t_item[1],'PlantUML（在线编辑器或 VS Code 插件），以及 StarUML、Enterprise Architect、Visual Paradigm 中任选一款的图形化建模工具；'),
+ ('i1',t_item[1],'大语言模型（实验第二环节启用）。'),
+ ('h',t_head,'三、实验内容'),
+ ('b',t_body,'本实验按手工建模、提示工程、AI 辅助生成、系统性模型评估四个活动依次进行。本报告对应活动 1，活动 2 至活动 4 按课程安排另行提交。'),
+ ('i2',t_item[2],'对系统进行简要的可行性分析、业务目标与开发需求描述；'),
+ ('i2',t_item[2],'进行整体层面的业务分析，将系统分解为子系统；'),
+ ('i2',t_item[2],'选择本人负责的子系统，用 PlantUML 绘制用例图，建立用例字典并进行用例描述；'),
+ ('i2',t_item[2],'选择该子系统中的一个用例，建立详尽的静态模型与动态模型，至少包含用例图、类图、状态图、顺序图各一个；'),
+ ('i2',t_item[2],'在活动 2 开启前，将手工模型提交入库。'),
+ ('h',t_req_head,'四、要求'),
+ ('r',t_req_item,'遵守纪律，及时沟通；'),
+ ('r',t_req_item,'实验报告在第 12 周前提交。'),
+]
+
+anchor=paras[i_end]
+for kind,tmpl,text in blocks:
+    anchor._p.addprevious(clone_para(tmpl,text))
+for p in front:
+    p._p.getparent().remove(p._p)
+for p in doc.paragraphs:
+    if p.style is not None and p.style.name=='知识点':
+        p.paragraph_format.keep_with_next=True
+
 # 删除示例系统主体
 body=doc._body._element
 start=None
