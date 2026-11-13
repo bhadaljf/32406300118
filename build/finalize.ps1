@@ -8,10 +8,20 @@ $word = New-Object -ComObject Word.Application
 $word.Visible = $false
 $word.DisplayAlerts = 0
 try {
+    # 第一遍：更新域与目录，保存
     $doc = $word.Documents.Open($Docx, $false, $false)
+    $doc.Repaginate()
     $doc.Fields.Update() | Out-Null
     foreach ($toc in $doc.TablesOfContents) { $toc.Update() | Out-Null }
+    $doc.Save()
+    $doc.Close(0)
+
+    # 第二遍：重新打开后分页已稳定，再更新一次目录并导出
+    $doc = $word.Documents.Open($Docx, $false, $false)
     $doc.Repaginate()
+    foreach ($toc in $doc.TablesOfContents) { $toc.Update() | Out-Null }
+    $doc.Repaginate()
+    foreach ($toc in $doc.TablesOfContents) { $toc.Update() | Out-Null }
     $doc.Save()
     $doc.ExportAsFixedFormat($Pdf, 17)
     $pages = $doc.ComputeStatistics(2)

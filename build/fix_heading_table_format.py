@@ -31,6 +31,15 @@ def set_paragraph_shading(paragraph, fill=None):
         shd.set(qn('w:fill'), fill)
         ppr.append(shd)
 
+# 压缩目录样式：目录条目由 Word 域生成，只能改样式定义，避免目录溢出到第二页留出空白页
+for st in doc.styles:
+    if not st.name.lower().startswith('toc'):
+        continue
+    pf = st.paragraph_format
+    pf.line_spacing = 1.0
+    pf.space_before = Pt(0)
+    pf.space_after = Pt(0)
+
 for p in doc.paragraphs:
     style = p.style.name
     if style == 'Heading 1':
