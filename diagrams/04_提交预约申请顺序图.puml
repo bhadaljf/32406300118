@@ -8,7 +8,7 @@ skinparam sequenceMessageAlign left
 actor 学生 as S
 participant "预约界面" as UI
 participant "预约控制器" as C
-participant "时段信息" as T
+participant "可预约时段" as T
 participant "预约申请" as R
 
 S -> UI : 1 选择实验室和时段
