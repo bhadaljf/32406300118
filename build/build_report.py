@@ -42,9 +42,19 @@ def add_p(text='',style=None,bold_lead=None,center=False,indent=True):
         r=p.add_run(text); font(r)
     return p
 
+def disable_heading_numbering(paragraph):
+    ppr=paragraph._p.get_or_add_pPr()
+    old=ppr.find(qn('w:numPr'))
+    if old is not None: ppr.remove(old)
+    numPr=OxmlElement('w:numPr')
+    ilvl=OxmlElement('w:ilvl'); ilvl.set(qn('w:val'),'0')
+    numId=OxmlElement('w:numId'); numId.set(qn('w:val'),'0')
+    numPr.append(ilvl); numPr.append(numId); ppr.append(numPr)
+
 def heading(text,level=1):
     style={1:'Heading 1',2:'Heading 2',3:'Heading 3'}.get(level,'Heading 2')
     p=doc.add_paragraph(style=style); p.paragraph_format.keep_with_next=True
+    disable_heading_numbering(p)
     r=p.add_run(text); r.font.color.rgb=None
     return p
 
@@ -107,8 +117,21 @@ r=p.add_run('Version 1.0'); font(r,14,True)
 add_p('作者：封媛　　班级：软件243　　学号：32406300118',center=True,indent=False)
 add_p('完成日期：2026年11月2日',center=True,indent=False)
 
+def add_toc_field(paragraph):
+    r=paragraph.add_run()
+    begin=OxmlElement('w:fldChar'); begin.set(qn('w:fldCharType'),'begin')
+    instr=OxmlElement('w:instrText'); instr.set(qn('xml:space'),'preserve')
+    instr.text='TOC \\o "1-3" \\h \\z \\u'
+    sep=OxmlElement('w:fldChar'); sep.set(qn('w:fldCharType'),'separate')
+    r._r.append(begin); r._r.append(instr); r._r.append(sep)
+    t=OxmlElement('w:t'); t.text='目录将在 Word 中更新'
+    hold=paragraph.add_run(); hold._r.append(t)
+    end=OxmlElement('w:fldChar'); end.set(qn('w:fldCharType'),'end')
+    tail=paragraph.add_run(); tail._r.append(end)
+
 doc.add_page_break(); p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER; r=p.add_run('目　录'); font(r,18,True)
-add_p('TOC_MARKER',indent=False)
+p=doc.add_paragraph(); p.paragraph_format.first_line_indent=Pt(0); p.paragraph_format.line_spacing=1.5
+add_toc_field(p)
 
 doc.add_page_break(); heading('1 概述',1)
 heading('1.1 背景',2)
