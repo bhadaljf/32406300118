@@ -6,8 +6,7 @@ skinparam defaultFontSize 13
 hide empty description
 left to right direction
 
-[*] --> 草稿 : 创建
-草稿 --> 待审核 : 提交
+[*] --> 待审核 : 提交
 待审核 --> 已通过 : 审核通过
 待审核 --> 已驳回 : 审核驳回
 待审核 --> 已取消 : 申请人取消
