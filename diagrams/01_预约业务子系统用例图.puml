@@ -1,0 +1,36 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+left to right direction
+
+actor 学生 as S
+actor 教师 as T
+actor 实验室管理员 as A
+
+rectangle 预约业务子系统 {
+  usecase "UC03 提交预约申请" as UC03
+  usecase "UC04 查询预约记录" as UC04
+  usecase "UC05 取消预约" as UC05
+  usecase "UC06 审核预约申请" as UC06
+  usecase "UC07 预约签到" as UC07
+  usecase "UC08 登记使用结果" as UC08
+}
+
+usecase "UC02 查看可预约时段\n（实验室资源管理子系统）" as UC02
+
+S --> UC03
+S --> UC04
+S --> UC05
+S --> UC07
+T --> UC03
+T --> UC04
+T --> UC05
+T --> UC07
+A --> UC06
+A --> UC08
+
+UC03 ..> UC02 : <<include>>
+@enduml
