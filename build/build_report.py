@@ -103,7 +103,7 @@ font(_note_r,9)
 
 for p in doc.paragraphs:
     if '开课学院及实验室：' in p.text:
-        p.text='开课学院及实验室：电子楼416A\t2026年11月13日'
+        p.text='开课学院及实验室：电子楼416A\t2026年11月15日'
         for r in p.runs: font(r,9)
 
 # 按 V202610 指导书重写实验目的、实验器材、实验内容、要求四栏
@@ -195,7 +195,7 @@ r=p.add_run('需求分析实验报告'); font(r,20,True)
 p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER; p.paragraph_format.space_before=Pt(30)
 r=p.add_run('Version 1.1'); font(r,14,True)
 add_p('作者：封媛　　班级：软件243　　学号：32406300118',center=True,indent=False)
-add_p('完成日期：2026年11月13日',center=True,indent=False)
+add_p('完成日期：2026年11月15日',center=True,indent=False)
 
 def add_toc_field(paragraph):
     r=paragraph.add_run()
