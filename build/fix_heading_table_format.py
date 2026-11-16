@@ -6,7 +6,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
 from pathlib import Path
-PATH = str(Path(__file__).resolve().parent.parent / 'out' / '32406300118.docx')
+PATH = str(Path(__file__).resolve().parent.parent / 'out' / '面向对象分析与设计实验1-软件243_封媛.docx')
 doc = Document(PATH)
 
 def set_run_font(run, east, latin, size, bold=False):

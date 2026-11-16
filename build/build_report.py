@@ -9,7 +9,7 @@ from docx.oxml.ns import qn
 
 BASE=Path(__file__).resolve().parent.parent
 REF=BASE/'build'/'assets'/'实验一模板参考.docx'
-OUT=BASE/'out'/'32406300118.docx'
+OUT=BASE/'out'/'面向对象分析与设计实验1-软件243_封媛.docx'
 DIAG=BASE/'diagrams'
 doc=Document(REF)
 
