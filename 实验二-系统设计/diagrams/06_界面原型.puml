@@ -1,0 +1,24 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 13
+
+@startsalt
+{+
+  校园实验室预约 | 我的预约 | 退出登录
+  .
+  {/ <b>提交预约申请
+    实验室   | [ 计算机实验室 A ^ ]
+    日期     | "2026-11-20      "
+    可预约时段 | ( ) 08:00-10:00  ( ) 10:00-12:00  ( ) 14:00-16:00
+    用途     | "课程实验        "
+    人数     | "30              "
+    .
+    { [ 提交 ] | [ 重置 ] }
+  }
+  .
+  提示：所选时段已被占用时，提交后在上方给出失败原因与可选时段。
+}
+@endsalt
+@enduml

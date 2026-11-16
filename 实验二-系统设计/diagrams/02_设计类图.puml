@@ -1,0 +1,75 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+skinparam classAttributeIconSize 0
+hide circle
+left to right direction
+
+interface 预约仓储接口 <<interface>> {
+  + 保存(申请) : void
+  + 按编号(编号) : 预约申请
+  + 查冲突(实验室, 时段) : List
+}
+
+interface 身份接口 <<interface>> {
+  + 校验令牌(令牌) : 用户信息
+}
+
+class 预约服务 <<Service>> {
+  - 仓储 : 预约仓储接口
+  - 身份 : 身份接口
+  + 提交(命令) : 预约编号
+  + 取消(编号, 操作人) : void
+  + 查询(申请人) : List
+}
+
+class 审核服务 <<Service>> {
+  - 记录仓储 : 记录仓储接口
+  + 审核(编号, 结论, 意见) : 审核记录
+}
+
+class 预约申请 <<Entity>> {
+  - 预约编号 : String
+  - 申请人 : String
+  - 实验室编号 : String
+  - 时段编号 : String
+  - 人数 : int
+  - 状态 : 预约状态
+  + 提交() : void
+  + 取消(操作人) : void
+  + 变更状态(新状态) : void
+}
+
+class 可预约时段 <<Entity>> {
+  - 时段编号 : String
+  - 实验室编号 : String
+  - 开始时间 : DateTime
+  - 结束时间 : DateTime
+  + 是否可用() : boolean
+  + 是否冲突(另一时段) : boolean
+}
+
+enum 预约状态 <<enumeration>> {
+  待审核
+  已通过
+  已驳回
+  已签到
+  已完成
+  已过期
+  已取消
+}
+
+class 预约控制器 <<Controller>> {
+  + 提交(请求) : 响应
+}
+
+预约控制器 --> 预约服务 : 调用
+预约服务 --> 预约仓储接口 : 依赖
+预约服务 --> 身份接口 : 依赖
+预约服务 --> 预约申请 : 创建
+预约服务 --> 可预约时段 : 校验
+审核服务 --> 预约申请 : 变更状态
+预约申请 --> 预约状态 : 持有
+@enduml

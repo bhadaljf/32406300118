@@ -1,0 +1,28 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+
+actor 学生 as S
+participant "预约控制器" as C
+participant "预约服务" as SV
+participant "身份接口" as AUTH
+participant "可预约时段" as SLOT
+participant "预约仓储接口" as REPO
+
+S -> C : 1 提交预约请求
+C -> AUTH : 2 校验令牌
+AUTH --> C : 3 返回用户信息
+C -> SV : 4 提交(命令)
+SV -> SLOT : 5 查询时段并校验冲突
+SLOT --> SV : 6 可用
+SV -> SV : 7 校验容量与开放状态
+SV -> REPO : 8 开启事务并保存申请
+REPO --> SV : 9 返回预约编号
+SV --> C : 10 提交结果
+C --> S : 11 返回待审核状态
+
+note over SV : 任一步校验失败时回滚事务，\n不产生预约记录并返回失败原因
+@enduml

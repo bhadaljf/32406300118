@@ -1,0 +1,28 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+skinparam componentStyle rectangle
+top to bottom direction
+
+package "表现层" {
+  [预约界面 / 审核界面 / 签到与使用界面]
+}
+
+package "应用层" {
+  [预约服务 / 审核服务 / 签到与使用服务 / 身份适配器]
+}
+
+package "领域层" {
+  [预约申请 / 可预约时段 / 审核记录 / 使用记录]
+}
+
+package "基础设施层" {
+  [预约仓储 / 记录仓储 / 消息通知]
+}
+
+[预约界面 / 审核界面 / 签到与使用界面] --> [预约服务 / 审核服务 / 签到与使用服务 / 身份适配器]
+[预约服务 / 审核服务 / 签到与使用服务 / 身份适配器] --> [预约申请 / 可预约时段 / 审核记录 / 使用记录]
+[预约服务 / 审核服务 / 签到与使用服务 / 身份适配器] --> [预约仓储 / 记录仓储 / 消息通知]
+@enduml

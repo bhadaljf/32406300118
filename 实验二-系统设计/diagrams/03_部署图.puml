@@ -1,0 +1,34 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+left to right direction
+
+node "用户浏览器" {
+  [单页应用\n预约 · 审核 · 签到]
+}
+
+node "应用服务器" {
+  [接口网关\n鉴权与限流]
+  [预约服务]
+  [审核服务]
+  [仓储实现]
+}
+
+node "数据库服务器" {
+  database "关系数据库\n预约 · 时段 · 记录" as DB
+}
+
+node "学校统一身份服务" {
+  [身份提供方]
+}
+
+[单页应用\n预约 · 审核 · 签到] --> [接口网关\n鉴权与限流] : HTTPS / JSON
+[接口网关\n鉴权与限流] --> [预约服务]
+[接口网关\n鉴权与限流] --> [审核服务]
+[预约服务] --> [仓储实现]
+[审核服务] --> [仓储实现]
+[仓储实现] --> DB : SQL
+[接口网关\n鉴权与限流] --> [身份提供方] : 令牌校验
+@enduml
