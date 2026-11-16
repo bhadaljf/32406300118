@@ -1,0 +1,31 @@
+@startuml
+skinparam componentStyle uml2
+skinparam packageStyle rectangle
+
+package "微服务 / 独立服务" {
+  [预约服务] as BookingService
+  [审核服务] as AuditService
+  [通知服务] as NotificationService
+  [身份认证服务] as AuthService
+}
+
+node "消息代理 (Message Broker)" {
+  [消息队列]
+}
+
+database "预约数据库" as BookingDB
+database "审核数据库" as AuditDB
+
+' 外部系统
+[学校统一身份服务] as SSO
+
+' 依赖与通信
+BookingService --> SSO : 校验令牌
+BookingService --> BookingDB : 读写
+AuditService --> AuditDB : 读写
+
+BookingService -> [消息队列] : 发布 "预约已提交" 事件
+[消息队列] -> AuditService : 订阅并处理
+[消息队列] -> NotificationService : 订阅并发送通知
+
+@enduml

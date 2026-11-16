@@ -1,0 +1,47 @@
+@startuml
+skinparam componentStyle uml2
+skinparam packageStyle rectangle
+
+package "表现层 (Presentation Layer)" {
+  [预约界面]
+  [审核界面]
+  [签到与使用界面]
+}
+
+package "应用层 (Application Layer)" {
+  [预约服务]
+  [审核服务]
+  [签到与使用服务]
+  [身份适配器]
+}
+
+package "领域层 (Domain Layer)" {
+  [预约申请]
+  [可预约时段]
+  [审核记录]
+  [使用记录]
+}
+
+package "基础设施层 (Infrastructure Layer)" {
+  [预约仓储实现]
+  [记录仓储实现]
+  [消息通知]
+  database "关系型数据库" as DB
+}
+
+' 依赖关系
+[预约界面] --> [预约服务]
+[审核界面] --> [审核服务]
+[签到与使用界面] --> [签到与使用服务]
+
+[预约服务] --> [预约申请]
+[预约服务] --> [可预约时段]
+[审核服务] --> [审核记录]
+[签到与使用服务] --> [使用记录]
+[预约服务] ..> [身份适配器] : <<use>>
+
+[预约申请] ..> [预约仓储实现] : <<interface>>
+[预约申请] ..> [记录仓储实现] : <<interface>>
+[预约仓储实现] --> DB
+[记录仓储实现] --> DB
+@enduml

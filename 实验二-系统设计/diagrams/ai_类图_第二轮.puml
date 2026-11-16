@@ -1,0 +1,57 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+}
+
+' --- 边界类 ---
+class BookingController <<Controller>> {
+  + submit(token: String, cmd: ReservationCommand): Result
+}
+
+' --- 控制类（职责编排） ---
+class BookingService <<Service>> {
+  - identity: IdentityInterface
+  - repo: ReservationRepository
+  + submit(token: String, cmd: ReservationCommand): Result
+  - checkConflict(labId: String, period: Period): void
+  - validateCapacity(capacity: int, reqPeople: int): void
+}
+
+' --- 实体类（职责纯粹） ---
+class Reservation <<Entity>> {
+  - id: String
+  - userId: String
+  - labId: String
+  - period: Period
+  - peopleCount: int
+  - status: ReservationStatus
+  + transitionTo(newStatus: ReservationStatus): void
+}
+
+class Period <<Entity / Value Object>> {
+  - periodId: String
+  - startTime: DateTime
+  - endTime: DateTime
+}
+
+' --- 接口 ---
+interface IdentityInterface <<interface>> {
+  + verifyToken(token: String): UserInfo
+}
+
+interface ReservationRepository <<interface>> {
+  + findByLabAndPeriod(labId: String, periodId: String): List<Reservation>
+  + save(reservation: Reservation): Reservation
+}
+
+' --- 关系 ---
+BookingController --> BookingService : 调用
+BookingService --> IdentityInterface : 校验身份
+BookingService --> ReservationRepository : 持久化/查询
+BookingService ..> Reservation : 创建/状态迁移
+BookingService ..> Period : 读取
+Reservation *-- Period : 关联
+
+@enduml
