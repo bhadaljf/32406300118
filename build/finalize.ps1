@@ -1,7 +1,11 @@
 param(
-    [string]$Docx = "D:\1学习\面向对象\32406300118\out\面向对象分析与设计实验1-软件243_封媛.docx",
-    [string]$Pdf  = "D:\1学习\面向对象\32406300118\out\面向对象分析与设计实验1-软件243_封媛.pdf"
+    [string]$Docx,
+    [string]$Pdf
 )
+
+$root = Split-Path -Parent $PSScriptRoot
+if (-not $Docx) { $Docx = Join-Path $root 'out\面向对象分析与设计实验1-软件243_封媛.docx' }
+if (-not $Pdf)  { $Pdf  = Join-Path $root 'out\面向对象分析与设计实验1-软件243_封媛.pdf' }
 
 $ErrorActionPreference = 'Stop'
 $word = New-Object -ComObject Word.Application
