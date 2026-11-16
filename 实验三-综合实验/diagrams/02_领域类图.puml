@@ -1,0 +1,73 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+skinparam classAttributeIconSize 0
+hide circle
+left to right direction
+
+class 用户 {
+  - 用户编号 : String
+  - 姓名 : String
+  - 所属院系 : String
+  - 身份状态 : String
+  + 是否可预约() : boolean
+}
+
+class 角色 {
+  - 角色编号 : String
+  - 名称 : String
+  - 权限集合 : String
+}
+
+class 实验室 {
+  - 实验室编号 : String
+  - 名称 : String
+  - 位置 : String
+  - 容量 : int
+  - 开放状态 : String
+}
+
+class 可预约时段 {
+  - 时段编号 : String
+  - 日期 : Date
+  - 开始时间 : Time
+  - 结束时间 : Time
+  - 可预约状态 : String
+  + 是否与(另一时段) : boolean
+}
+
+class 预约申请 {
+  - 预约编号 : String
+  - 用途 : String
+  - 人数 : int
+  - 状态 : String
+  - 申请时间 : DateTime
+  + 提交() : void
+  + 取消(操作人) : void
+  + 变更状态(新状态) : void
+}
+
+class 审核记录 {
+  - 审核编号 : String
+  - 结论 : String
+  - 意见 : String
+  - 审核时间 : DateTime
+}
+
+class 使用记录 {
+  - 使用编号 : String
+  - 签到时间 : DateTime
+  - 离场时间 : DateTime
+  - 使用结果 : String
+}
+
+用户 "1" -- "0..*" 预约申请 : 提出 >
+用户 "0..*" -- "0..*" 角色 : 具有 >
+实验室 "1" -- "0..*" 可预约时段 : 开放 >
+实验室 "1" -- "0..*" 预约申请 : 被预约 >
+可预约时段 "1" -- "0..*" 预约申请 : 被申请 >
+预约申请 "1" -- "0..1" 审核记录 : 对应 >
+预约申请 "1" -- "0..1" 使用记录 : 对应 >
+@enduml

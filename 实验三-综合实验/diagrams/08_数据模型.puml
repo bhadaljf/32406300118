@@ -1,0 +1,80 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 11
+skinparam classAttributeIconSize 0
+hide circle
+left to right direction
+
+class 用户 <<table>> {
+  用户编号 : VARCHAR(20) <<PK>>
+  姓名 : VARCHAR(40)
+  所属院系 : VARCHAR(60)
+  身份状态 : VARCHAR(10)
+}
+
+class 角色 <<table>> {
+  角色编号 : VARCHAR(20) <<PK>>
+  名称 : VARCHAR(20)
+  权限集合 : VARCHAR(200)
+}
+
+class 用户角色 <<table>> {
+  用户编号 : VARCHAR(20) <<FK>>
+  角色编号 : VARCHAR(20) <<FK>>
+}
+
+class 实验室 <<table>> {
+  实验室编号 : VARCHAR(20) <<PK>>
+  名称 : VARCHAR(60)
+  位置 : VARCHAR(60)
+  容量 : INT
+  开放状态 : VARCHAR(10)
+}
+
+class 可预约时段 <<table>> {
+  时段编号 : VARCHAR(20) <<PK>>
+  实验室编号 : VARCHAR(20) <<FK>>
+  开始时间 : DATETIME
+  结束时间 : DATETIME
+  可预约状态 : VARCHAR(10)
+}
+
+class 预约申请 <<table>> {
+  预约编号 : VARCHAR(20) <<PK>>
+  申请人编号 : VARCHAR(20) <<FK>>
+  实验室编号 : VARCHAR(20) <<FK>>
+  时段编号 : VARCHAR(20) <<FK>>
+  用途 : VARCHAR(120)
+  人数 : INT
+  状态 : VARCHAR(10)
+  申请时间 : DATETIME
+}
+
+class 审核记录 <<table>> {
+  审核编号 : VARCHAR(20) <<PK>>
+  预约编号 : VARCHAR(20) <<FK>>
+  审核人 : VARCHAR(20)
+  结论 : VARCHAR(10)
+  意见 : VARCHAR(200)
+  审核时间 : DATETIME
+}
+
+class 使用记录 <<table>> {
+  使用编号 : VARCHAR(20) <<PK>>
+  预约编号 : VARCHAR(20) <<FK>>
+  签到时间 : DATETIME
+  离场时间 : DATETIME
+  使用结果 : VARCHAR(20)
+}
+
+用户 "1" -- "0..*" 用户角色
+角色 "1" -- "0..*" 用户角色
+用户 "1" -- "0..*" 预约申请
+实验室 "1" -- "0..*" 可预约时段
+实验室 "1" -- "0..*" 预约申请
+可预约时段 "1" -- "0..*" 预约申请
+预约申请 "1" -- "0..1" 审核记录
+预约申请 "1" -- "0..1" 使用记录
+@enduml

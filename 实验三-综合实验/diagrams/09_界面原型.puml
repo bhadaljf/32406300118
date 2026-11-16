@@ -1,0 +1,17 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+skinparam ranksep 30
+skinparam nodesep 10
+
+rectangle "页头：校园实验室预约　|　我的预约　|　管理员审核　|　退出" as H
+rectangle "筛选：状态 [全部▾]　日期 [本周▾]　[查询]" as F
+rectangle "预约列表\n编号 | 实验室 | 时段 | 人数 | 状态 | 操作\n20261110-01 | 计算机实验室 A | 11-20 08:00-10:00 | 30 | 待审核 | 取消\n20261109-03 | 计算机实验室 B | 11-19 14:00-16:00 | 25 | 已通过 | 取消 / 签到\n20261102-07 | 计算机实验室 A | 11-12 10:00-12:00 | 20 | 已完成 | 查看" as L
+rectangle "[ 新建预约 ]　[ 导出 ]" as B
+
+H -[hidden]down-> F
+F -[hidden]down-> L
+L -[hidden]down-> B
+@enduml

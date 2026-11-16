@@ -1,0 +1,17 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+hide empty description
+left to right direction
+
+[*] --> 待审核 : 提交
+待审核 --> 已通过 : 审核通过
+待审核 --> 已驳回 : 审核驳回
+待审核 --> 已取消 : 申请人取消
+已通过 --> 已签到 : 到场签到 [在签到窗口内]
+已通过 --> 已过期 : 超过签到时限
+已通过 --> 已取消 : 管理员取消 [尚未签到]
+已签到 --> 已完成 : 使用结束
+@enduml
