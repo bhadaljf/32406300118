@@ -1,0 +1,39 @@
+@startuml
+skinparam componentStyle rectangle
+
+node "用户终端" {
+    component "浏览器 (Vue3 SPA)" as browser
+}
+
+node "API Gateway 节点" {
+    component "统一网关\n(路由/鉴权)" as gw
+}
+
+node "容器化集群 (K8s)" {
+    node "Pod 1: 鉴权服务" as pod1 {
+        component "Auth Service" as authSvc
+    }
+    node "Pod 2: 预约服务" as pod2 {
+        component "Reservation Service" as resvSvc
+    }
+    node "Pod 3: 资源服务" as pod3 {
+        component "Resource Service" as resourceSvc
+    }
+}
+
+node "数据库服务器" {
+    database "PostgreSQL (主从)" as pgdb
+}
+
+node "学校CAS服务器" {
+    component "统一身份认证服务" as cas
+}
+
+browser <--> gw : <<HTTPS/JSON>>
+gw --> authSvc : <<HTTP>>
+gw --> resvSvc : <<HTTP>>
+gw --> resourceSvc : <<HTTP>>
+authSvc <--> cas : <<HTTPS/LDAP>>
+resvSvc <--> pgdb : <<TCP/SQL>>
+resourceSvc <--> pgdb : <<TCP/SQL>>
+@enduml

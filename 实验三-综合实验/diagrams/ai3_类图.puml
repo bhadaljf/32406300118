@@ -1,0 +1,110 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package "Controller Layer" {
+    class ReservationController {
+        - reservationService : IReservationService
+        + submitReservation(req: ReservationDTO) : Result
+        + getReservation(id: String) : Reservation
+    }
+    class ResourceController {
+        - labService : ILabService
+        + getLabList() : List<Lab>
+    }
+    class AuthController {
+        - authService : IAuthService
+        + login(credentials: Credentials) : Token
+    }
+}
+
+package "Service Layer" {
+    interface IReservationService {
+        + createReservation(reservation: Reservation) : boolean
+        + checkConflict(labId: String, timeSlotId: String) : boolean
+    }
+    class ReservationServiceImpl {
+        - reservationRepo : IReservationRepository
+        - labService : ILabService
+        + createReservation(reservation: Reservation) : boolean
+        + checkConflict(labId: String, timeSlotId: String) : boolean
+    }
+    
+    interface ILabService {
+        + getLabById(id: String) : Lab
+    }
+    class LabServiceImpl {
+        - labRepo : ILabRepository
+        + getLabById(id: String) : Lab
+    }
+    
+    interface IAuthService {
+        + validateUser(token: String) : boolean
+    }
+    class AuthServiceImpl {
+        + validateUser(token: String) : boolean
+    }
+}
+
+package "Repository Layer" {
+    interface IReservationRepository {
+        + save(reservation: Reservation) : void
+        + findById(id: String) : Reservation
+    }
+    interface ILabRepository {
+        + findById(id: String) : Lab
+    }
+}
+
+package "Entity Layer" {
+    class User {
+        - id : String
+        - name : String
+        - role : String
+    }
+    class Reservation {
+        - id : String
+        - status : ReservationStatus
+        - applyTime : Date
+        - startTime : Date
+        - endTime : Date
+    }
+    class TimeSlot {
+        - id : String
+        - startTime : Date
+        - endTime : Date
+        - isAvailable : boolean
+    }
+    class Lab {
+        - id : String
+        - name : String
+        - capacity : int
+        - location : String
+    }
+    enum ReservationStatus {
+        PENDING
+        APPROVED
+        REJECTED
+        CANCELLED
+    }
+}
+
+' Relationship definitions
+ReservationController ..> IReservationService : <<use>>
+ResourceController ..> ILabService : <<use>>
+AuthController ..> IAuthService : <<use>>
+
+ReservationServiceImpl ..|> IReservationService : <<realize>>
+LabServiceImpl ..|> ILabService : <<realize>>
+AuthServiceImpl ..|> IAuthService : <<realize>>
+
+ReservationServiceImpl ..> IReservationRepository : <<use>>
+ReservationServiceImpl ..> ILabService : <<use>>
+LabServiceImpl ..> ILabRepository : <<use>>
+
+Reservation --> User : belongs to
+Reservation --> TimeSlot : occupies
+TimeSlot --> Lab : belongs to
+Reservation --> ReservationStatus
+
+@enduml

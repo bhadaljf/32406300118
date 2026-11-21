@@ -1,0 +1,30 @@
+@startuml
+skinparam componentStyle rectangle
+
+node "用户终端" {
+    component "浏览器 (Vue3 SPA)" as browser
+}
+
+node "应用服务器 (Flask App)" {
+    component "鉴权模块" as auth
+    component "预约模块" as resv
+    component "资源模块" as resource
+    component "API Gateway" as gateway
+}
+
+node "数据库服务器" {
+    database "PostgreSQL" as db
+}
+
+node "学校CAS服务器" {
+    component "统一身份认证服务" as cas
+}
+
+browser <--> gateway : <<HTTPS/JSON>>
+gateway --> auth
+gateway --> resv
+gateway --> resource
+auth <--> cas : <<HTTPS/LDAP>>
+resv <--> db : <<TCP/SQL>>
+resource <--> db : <<TCP/SQL>>
+@enduml
