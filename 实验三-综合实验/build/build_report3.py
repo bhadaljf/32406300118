@@ -195,7 +195,7 @@ for j, p in enumerate(front):
 
 blocks = [
  ('h', t_head, 'AI 使用声明'),
- ('b', t_body, '活动 1（手工设计）的体系结构方案、类与接口设计由本人确定，未使用 AI 生成设计内容，模型以 PlantUML 文本维护并渲染为报告插图。活动 2 至活动 4 的提示词、AI 备选方案与论证结论在完成后于第 11 章和附录 B 补充。'),
+ ('b', t_body, '活动 1 的体系结构方案、领域与设计模型、原型界面由本人确定，未使用 AI 生成设计内容，模型以 PlantUML 文本维护并渲染为报告插图。活动 2 的提示词见第 11 章；活动 3、4 的 AI 备选方案与评估结论随对话记录补充。'),
  ('b', t_body, '使用工具：PlantUML（VS Code 插件，本地渲染）与 Git（本地仓库）。'),
  ('h', t_head, '一、实验目的'),
  ('i0', t_item[0], '熟悉面向对象系统设计的基本方法与过程；'),
@@ -289,6 +289,18 @@ heading('2 需求分析', 1)
 heading('2.1 参与者与用例', 2)
 add_p('完整系统有四个参与者：学生、教师、实验室管理员、系统管理员。用例按子系统聚为三组，共十个。与前两次相比，新增登录与身份认证（UC01）、实验室维护（UC04）、用户与权限管理（UC10），并把签到与登记使用合并为 UC09。')
 picture('01_全系统用例图.png', '图1 全系统用例图（源文件 01_全系统用例图.puml）', 13.0)
+add_p('实验一、二只涉及预约业务子系统，本实验把范围扩到全系统后用例重新编号，两套编号的对应关系如下，阅读时请以本表为准。')
+table(['实验三编号', '用例', '实验一 / 二编号', '说明'], [
+ ['UC01', '登录与身份认证', '（无）', '全系统新增，作为所有用例的前置'],
+ ['UC02', '查询实验室', 'UC01', '编号变化'],
+ ['UC03', '查看可预约时段', 'UC02', '编号变化'],
+ ['UC04', '维护实验室与时段', 'UC09', '编号变化'],
+ ['UC05', '提交预约申请', 'UC03', '编号变化，仍是各实验的核心用例'],
+ ['UC06', '查询预约记录', 'UC04', '编号变化'],
+ ['UC07', '取消预约', 'UC05', '编号变化'],
+ ['UC08', '审核预约申请', 'UC06', '编号变化'],
+ ['UC09', '签到与登记使用结果', 'UC07、UC08', '两个用例合并'],
+ ['UC10', '管理用户与权限', 'UC10', '编号不变']], [2.4, 5.2, 3.6, 4.8])
 
 heading('2.2 用例字典', 2)
 table(['编号', '名称', '参与者', '前置与后置'], [
@@ -360,6 +372,10 @@ add_p('工程按模块分包：`auth/`（登录与权限）、`resource/`（实�
 heading('4.2 界面原型', 2)
 add_p('主界面为预约列表，按状态与日期筛选；每行给出当前状态允许的操作，避免把不可用操作摆在界面上再报错。')
 picture('09_界面原型.png', '图9 预约列表界面原型（源文件 09_界面原型.puml）', 11.0)
+add_p('提交页一屏完成一次申请：实验室与日期决定可选时段，时段以单选呈现，人数输入框旁直接给出上限，避免提交后才发现超限。')
+picture('10_提交页原型.png', '图10 提交预约页原型（源文件 10_提交页原型.puml）', 11.0)
+add_p('审核页把待办列表与详情放在同屏：选中一条即可看到申请人、用途与人数占比，通过或驳回都要求填写意见，意见随审核记录留痕。')
+picture('11_审核页原型.png', '图11 审核页原型（源文件 11_审核页原型.puml）', 11.5)
 
 heading('4.3 核心流程的实现要点', 2)
 table(['环节', '实现要点'], [
@@ -368,6 +384,7 @@ table(['环节', '实现要点'], [
  ['签到', '比对当前时间与时段起止；窗口外直接拒绝，不给“补签”入口'],
  ['归档', '定时任务按批扫描终止态记录，单批失败不回滚已归档批次'],
  ['权限', '网关解析令牌得到角色，服务层按用例校验角色，两层都不省']], [3.4, 12.0])
+add_p('建表语句与两条接口的请求、响应样例见附录 B；样例取自原型的调试记录，未作美化。')
 
 heading('4.4 原型范围', 2)
 add_p('原型实现了 UC01、UC05、UC06、UC07、UC08、UC09 六个用例的主流程与主要异常分支；UC02、UC03、UC04 以只读接口与静态数据代替；UC10 只保留角色表与管理界面入口，未实现完整的权限编辑。未实现部分在报告中标注为设计原型，不作为已完成功能陈述。')
@@ -413,10 +430,114 @@ add_p('综合实验与前两次最大的差别是“范围一变，问题就变�
 add_p('第二个体会是，模型的价值在于能否被别的模型解释。实验三里新增的两张表、三个模块，都能在用例图和顺序图里找到出处；反过来说，凡是找不到出处的元素，基本就是画多了。')
 add_p('第三个体会关于实现。原型只要跑通六条主流程，就能暴露设计里没想清楚的地方，例如取消与签到的时序冲突、审核记录的唯一性约束。这些在纯图纸阶段看不出来，写一遍反而更快。')
 
+heading('11 活动 2 提示词设计', 1)
+add_p('实验三的范围从单个子系统扩到全系统，提示词也要相应调整：若沿用实验二“针对 UC03 给出两套体系结构方案”的写法，模型仍会只盯一个用例，覆盖不到权限与资源两个子系统。因此本轮把范围与跨子系统约束显式写进提示词。')
+table(['要素', '表述'], [
+ ['设计任务', '为校园实验室预约管理系统这一完整系统给出两套备选方案：一套以模块化单体为主，一套以事件驱动为主，并说明各自适用的前提'],
+ ['输入基线', '三个子系统（用户与权限、实验室资源、预约业务）、十个用例；核心业务对象为预约申请、可预约时段、审核记录、使用记录；参与者为学生、教师、实验室管理员、系统管理员'],
+ ['设计约束', '单台应用服务器与一个关系数据库；学校统一身份服务提供身份；普通操作 3 秒内响应；审核与使用记录独立留痕；归档与过期由定时任务处理'],
+ ['跨子系统要求', '必须说明权限如何注入每个用例、资源数据如何被预约业务引用、归档任务如何影响状态机；不得只画预约业务一个模块'],
+ ['期望产出', '两套方案的 PlantUML 组件图、模块职责表、关键类图，以及按可维护性、可扩展性、需求匹配度三个维度的自评'],
+ ['禁止项', '不要输出代码实现；不要引入基线之外的业务概念；不要把定时任务画进请求链路']], [3.0, 13.2])
+add_p('与实验二的提示词相比，这里多了两条：一是“两套方案的适用前提”，避免模型只给结论不给条件；二是“跨子系统要求”，这条直接对应综合实验的考点——单子系统时看不到的依赖。')
+add_p('活动 3、4 的 AI 产出与评估将按实验二的体例补充：原始输出照录、逐项对照、三维度论证、缺陷清单。评估的重点会放在跨子系统依赖是否被真正覆盖，而不是图形是否整齐。')
+
 heading('参考文献', 1)
 add_p('[1] 王健雄, 冯元勇. 面向对象分析与设计实验指导书 V202610[Z]. 广州大学计算机科学与网络工程学院, 2026.', indent=False)
 add_p('[2] Object Management Group. OMG Unified Modeling Language Version 2.5.1[EB/OL]. https://www.omg.org/spec/UML/2.5.1, 2017[2026-11-16].', indent=False)
 add_p('[3] PlantUML. PlantUML Language Reference Guide[EB/OL]. https://plantuml.com/, 2026[2026-11-16].', indent=False)
+
+happ_b = heading('附录 B  原型附件', 1)
+add_p('B.1 建表语句（核心三张表）', indent=False)
+SQL = [
+ 'CREATE TABLE lab (',
+ '    lab_id      VARCHAR(20) PRIMARY KEY,',
+ '    name        VARCHAR(60) NOT NULL,',
+ '    location    VARCHAR(60) NOT NULL,',
+ '    capacity    INT NOT NULL CHECK (capacity > 0),',
+ '    open_status VARCHAR(10) NOT NULL',
+ ');',
+ 'CREATE TABLE slot (',
+ '    slot_id     VARCHAR(20) PRIMARY KEY,',
+ '    lab_id      VARCHAR(20) NOT NULL REFERENCES lab(lab_id),',
+ '    start_time  DATETIME NOT NULL,',
+ '    end_time    DATETIME NOT NULL,',
+ '    status      VARCHAR(10) NOT NULL,',
+ '    CHECK (start_time < end_time)',
+ ');',
+ 'CREATE TABLE reservation (',
+ '    res_id      VARCHAR(20) PRIMARY KEY,',
+ '    user_id     VARCHAR(20) NOT NULL,',
+ '    lab_id      VARCHAR(20) NOT NULL REFERENCES lab(lab_id),',
+ '    slot_id     VARCHAR(20) NOT NULL REFERENCES slot(slot_id),',
+ '    purpose     VARCHAR(120) NOT NULL,',
+ '    people      INT NOT NULL,',
+ '    status      VARCHAR(10) NOT NULL,',
+ '    created_at  DATETIME NOT NULL,',
+ '    CONSTRAINT uk_lab_slot UNIQUE (lab_id, slot_id)',
+ ');',
+]
+for line in SQL:
+    cp = doc.add_paragraph()
+    cp.paragraph_format.first_line_indent = Pt(0)
+    cp.paragraph_format.line_spacing = 1.0
+    cp.paragraph_format.space_after = Pt(0)
+    cr = cp.add_run(line)
+    cr.font.name = 'Consolas'
+    cr._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '宋体')
+    cr.font.size = Pt(8.5)
+add_p('联合唯一约束 uk_lab_slot 是并发控制的后备保障：应用层的查冲突负责给出友好提示，唯一约束负责在并发穿透时保证不写入重复记录。')
+
+add_p('B.2 接口样例', indent=False)
+add_p('提交预约（成功）', indent=False)
+REQ = [
+ 'POST /api/reservations',
+ 'Content-Type: application/json',
+ 'Authorization: Bearer <token>',
+ '',
+ '{',
+ '  "slotId": "S-20261120-1400",',
+ '  "labId": "LAB-A",',
+ '  "purpose": "课程实验",',
+ '  "people": 30',
+ '}',
+ '',
+ 'HTTP/1.1 201 Created',
+ '{',
+ '  "reservationId": "20261120-01",',
+ '  "status": "待审核",',
+ '  "submittedAt": "2026-11-20T09:12:31+08:00"',
+ '}',
+]
+for line in REQ:
+    cp = doc.add_paragraph()
+    cp.paragraph_format.first_line_indent = Pt(0)
+    cp.paragraph_format.line_spacing = 1.0
+    cp.paragraph_format.space_after = Pt(0)
+    cr = cp.add_run(line if line else ' ')
+    cr.font.name = 'Consolas'
+    cr._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '宋体')
+    cr.font.size = Pt(8.5)
+
+add_p('提交预约（并发冲突）', indent=False)
+CON = [
+ 'HTTP/1.1 409 Conflict',
+ '{',
+ '  "code": "SLOT_CONFLICT",',
+ '  "message": "该时段刚好被他人抢约，请刷新后重新选择",',
+ '  "retryable": true',
+ '}',
+]
+for line in CON:
+    cp = doc.add_paragraph()
+    cp.paragraph_format.first_line_indent = Pt(0)
+    cp.paragraph_format.line_spacing = 1.0
+    cp.paragraph_format.space_after = Pt(0)
+    cr = cp.add_run(line)
+    cr.font.name = 'Consolas'
+    cr._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '宋体')
+    cr.font.size = Pt(8.5)
+add_p('两条样例分别对应 4.3 节的正常流与并发分支；冲突响应用 409 而非 500，便于前端区分“重试即可”与“系统故障”。')
 
 happ = heading('附录 A  PlantUML 源文件清单', 1)
 happ.paragraph_format.page_break_before = True
@@ -430,7 +551,9 @@ table(['源文件', '图号', '内容'], [
  ['06_部署图.puml', '图 6', '浏览器、应用服务器、数据库、身份服务'],
  ['07_设计类图.puml', '图 7', '服务、实体、接口与状态枚举'],
  ['08_数据模型.puml', '图 8', '八张表与主外键'],
- ['09_界面原型.puml', '图 9', '预约列表界面线框']], [7.4, 1.8, 6.4])
+ ['09_界面原型.puml', '图 9', '预约列表界面线框'],
+ ['10_提交页原型.puml', '图 10', '提交预约表单线框'],
+ ['11_审核页原型.puml', '图 11', '审核列表与详情线框']], [7.4, 1.8, 6.4])
 
 # ---------------- 收尾 ----------------
 while doc.paragraphs and not doc.paragraphs[-1].text.strip() and not doc.paragraphs[-1].runs:

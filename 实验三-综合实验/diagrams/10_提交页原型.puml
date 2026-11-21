@@ -1,0 +1,21 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+skinparam ranksep 26
+skinparam nodesep 8
+
+rectangle "页头：校园实验室预约　|　我的预约　|　退出" as H
+rectangle "实验室　[ 计算机实验室 A ▾ ]　　日期　[ 2026-11-20 ]" as R1
+rectangle "可预约时段　( ) 08:00-10:00　( ) 10:00-12:00　(•) 14:00-16:00" as R2
+rectangle "用途　[ 课程实验 ]　　人数　[ 30 ]（上限 40）" as R3
+rectangle "提示：该时段剩余容量 40，提交后进入待审核状态。" as N
+rectangle "[ 提交申请 ]　[ 重置 ]" as B
+
+H -[hidden]down-> R1
+R1 -[hidden]down-> R2
+R2 -[hidden]down-> R3
+R3 -[hidden]down-> N
+N -[hidden]down-> B
+@enduml

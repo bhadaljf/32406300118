@@ -1,0 +1,19 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Microsoft YaHei"
+skinparam defaultFontSize 12
+skinparam ranksep 26
+skinparam nodesep 8
+
+rectangle "页头：校园实验室预约　|　待审核 3 条　|　退出" as H
+rectangle "待审核列表\n20261110-01 | 计算机实验室 A | 11-20 14:00-16:00 | 30 人 | 课程实验\n20261110-04 | 计算机实验室 B | 11-21 08:00-10:00 | 25 人 | 竞赛训练\n20261109-07 | 计算机实验室 A | 11-19 10:00-12:00 | 40 人 | 项目活动" as L
+rectangle "申请详情：申请人 张××　院系 计算机学院　用途 课程实验　人数 30 / 40" as D
+rectangle "审核意见　[ 用途与时段符合实验室管理规定 ]" as C
+rectangle "[ 通过 ]　[ 驳回 ]" as B
+
+H -[hidden]down-> L
+L -[hidden]down-> D
+D -[hidden]down-> C
+C -[hidden]down-> B
+@enduml
