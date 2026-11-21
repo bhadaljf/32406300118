@@ -130,7 +130,7 @@ for table in doc.tables[2:]:
                 p.paragraph_format.line_spacing = 1.0
                 p.paragraph_format.first_line_indent = Pt(0)
                 for r in p.runs:
-                    set_run_font(r, '宋体', 'Times New Roman', 10.5, ri == 0)
+                    set_run_font(r, '宋体', 'Times New Roman', 11, ri == 0)
         if ri == 0:
             trpr = row._tr.get_or_add_trPr()
             if trpr.find(qn('w:tblHeader')) is None:

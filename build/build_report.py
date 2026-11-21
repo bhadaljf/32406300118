@@ -19,7 +19,7 @@ def set_cell(cell,text,bold=False,center=False):
     r=p.add_run(text); r.bold=bold; font(r)
     cell.vertical_alignment=WD_CELL_VERTICAL_ALIGNMENT.CENTER
 
-def font(run,size=10.5,bold=None):
+def font(run,size=11,bold=None):
     run.font.name='Times New Roman'; run._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'),'宋体'); run.font.size=Pt(size)
     if bold is not None: run.bold=bold
 

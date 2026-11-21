@@ -16,7 +16,7 @@ DIAG = LAB / 'diagrams'
 doc = Document(REF)
 
 
-def font(run, size=10.5, bold=None):
+def font(run, size=11, bold=None):
     run.font.name = 'Times New Roman'
     run._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'), '宋体')
     run.font.size = Pt(size)

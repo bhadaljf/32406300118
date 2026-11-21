@@ -16,7 +16,7 @@ DIAG = LAB / 'diagrams'
 doc = Document(REF)
 
 
-def font(run, size=10.5, bold=None):
+def font(run, size=11, bold=None):
     run.font.name = 'Times New Roman'
     run._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'), '宋体')
     run.font.size = Pt(size)
@@ -469,7 +469,7 @@ table(['编号', '所属图', '缺陷', '类型', '改进建议'], [
  ['D6', '图 11', 'autonumber 与手写序号叠加，渲染为“1 1.”', '图面', '去掉手写序号或关闭 autonumber']], [1.4, 1.8, 6.6, 1.8, 4.4])
 add_p('改进建议分两层。模型层：D1 与 D4 影响结构正确性，必须修正；D3 已在第二轮自愈，可保留修正版。提示词层：本轮把“职责分离”写进提示词后模型确实照做，说明可判定的约束有效；但“关联还是组合”没有被点名，模型就把原本正确的关联改错了。下一轮应把易错点逐条列成检查项，而不是依赖模型自觉。')
 
-href = heading('参考文献', 1); href.paragraph_format.page_break_before = True
+href = heading('参考文献', 1)
 add_p('[1] 王健雄, 冯元勇. 面向对象分析与设计实验指导书 V202610[Z]. 广州大学计算机科学与网络工程学院, 2026.', indent=False)
 add_p('[2] Object Management Group. OMG Unified Modeling Language Version 2.5.1[EB/OL]. https://www.omg.org/spec/UML/2.5.1, 2017[2026-11-16].', indent=False)
 add_p('[3] PlantUML. PlantUML Language Reference Guide[EB/OL]. https://plantuml.com/, 2026[2026-11-16].', indent=False)
