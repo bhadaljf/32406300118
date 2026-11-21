@@ -83,7 +83,19 @@ def heading(text, level=1):
     return p
 
 
+def set_borders_none(table):
+    tblPr = table._tbl.tblPr
+    borders = OxmlElement('w:tblBorders')
+    for edge in ('top', 'left', 'bottom', 'right', 'insideH', 'insideV'):
+        el = OxmlElement(f'w:{edge}')
+        el.set(qn('w:val'), 'none')
+        el.set(qn('w:sz'), '0')
+        borders.append(el)
+    tblPr.append(borders)
+
+
 def table(headers, rows, widths=None):
+    doc.add_paragraph()
     t = doc.add_table(rows=1, cols=len(headers))
     t.alignment = WD_TABLE_ALIGNMENT.CENTER
     t.style = doc.tables[0].style
@@ -94,7 +106,7 @@ def table(headers, rows, widths=None):
     for row in rows:
         cells = t.add_row().cells
         for i, v in enumerate(row):
-            set_cell(cells[i], str(v), False, i == 0 and len(str(v)) < 12)
+            set_cell(cells[i], str(v), False, len(str(v)) <= 24)
     if widths:
         for row in t.rows:
             for i, w in enumerate(widths):
@@ -111,15 +123,33 @@ def table(headers, rows, widths=None):
 
 
 def picture(name, caption, width=15.0):
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.keep_with_next = True
-    p.add_run().add_picture(str(DIAG / name), width=Cm(width))
-    c = doc.add_paragraph()
-    c.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    c.paragraph_format.keep_together = True
-    r = c.add_run(caption)
+    doc.add_paragraph()
+    t = doc.add_table(rows=1, cols=1)
+    t.alignment = WD_TABLE_ALIGNMENT.CENTER
+    set_borders_none(t)
+    cell = t.cell(0, 0)
+    p1 = cell.paragraphs[0]
+    p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p1.add_run().add_picture(str(DIAG / name), width=Cm(width))
+    p2 = cell.add_paragraph()
+    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p2.add_run(caption)
     font(r, 10.5)
+    doc.add_paragraph()
+    return t
+
+
+def code_list(fname):
+    for line in (DIAG / fname).read_text(encoding='utf-8').splitlines():
+        cp = doc.add_paragraph()
+        cp.paragraph_format.first_line_indent = Pt(0)
+        cp.paragraph_format.line_spacing = 1.0
+        cp.paragraph_format.space_after = Pt(0)
+        cr = cp.add_run(line if line else ' ')
+        cr.font.name = 'Consolas'
+        cr._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '宋体')
+        cr.font.size = Pt(9)
+    doc.add_paragraph()
 
 
 def add_toc_field(paragraph):
@@ -487,6 +517,22 @@ table(['源文件', '图号', '内容'], [
  ['06_界面原型.puml', '图 7', '提交预约界面线框'],
  ['07_数据模型.puml', '图 4', '五张表与主外键关系']], [7.4, 1.8, 6.4])
 
+add_p('以下为各源文件全文。')
+add_p('01_分层体系结构.puml', indent=False)
+code_list('01_分层体系结构.puml')
+add_p('02_设计类图.puml', indent=False)
+code_list('02_设计类图.puml')
+add_p('03_部署图.puml', indent=False)
+code_list('03_部署图.puml')
+add_p('04_提交预约顺序图.puml', indent=False)
+code_list('04_提交预约顺序图.puml')
+add_p('05_预约申请状态图.puml', indent=False)
+code_list('05_预约申请状态图.puml')
+add_p('06_界面原型.puml', indent=False)
+code_list('06_界面原型.puml')
+add_p('07_数据模型.puml', indent=False)
+code_list('07_数据模型.puml')
+
 happ2 = heading('附录 B  AI 原始输出', 1)
 add_p('以下为两轮提示词下模型返回的 PlantUML 原文，未作修改，与 12.1 的五张图一一对应。')
 
@@ -508,9 +554,13 @@ for label, fname in [('B.1 方案A 分层单体（对应图 8）', 'ai_A_分层�
     add_p('')
 
 # ---------------- 收尾 ----------------
-while doc.paragraphs and not doc.paragraphs[-1].text.strip() and not doc.paragraphs[-1].runs:
+while doc.paragraphs:
     last = doc.paragraphs[-1]
-    last._p.getparent().remove(last._p)
+    p_el = last._p
+    has_obj = p_el.find('.//' + qn('w:drawing')) is not None or p_el.find('.//' + qn('w:pict')) is not None
+    if last.text.strip() or has_obj:
+        break
+    p_el.getparent().remove(p_el)
 
 for p in doc.paragraphs:
     for r in p.runs:
