@@ -49,7 +49,6 @@ for p in doc.paragraphs:
         p.paragraph_format.space_before = Pt(12)
         p.paragraph_format.space_after = Pt(6)
         p.paragraph_format.line_spacing = 1.0
-        p.paragraph_format.keep_with_next = True
         set_paragraph_shading(p, 'D9D9D9')
         for r in p.runs:
             set_run_font(r, '黑体', 'Times New Roman', 14, True)
@@ -60,7 +59,6 @@ for p in doc.paragraphs:
         p.paragraph_format.space_before = Pt(9)
         p.paragraph_format.space_after = Pt(4)
         p.paragraph_format.line_spacing = 1.0
-        p.paragraph_format.keep_with_next = True
         set_paragraph_shading(p, None)
         for r in p.runs:
             set_run_font(r, '黑体', 'Times New Roman', 12, True)
@@ -71,7 +69,6 @@ for p in doc.paragraphs:
         p.paragraph_format.space_before = Pt(6)
         p.paragraph_format.space_after = Pt(3)
         p.paragraph_format.line_spacing = 1.0
-        p.paragraph_format.keep_with_next = True
         set_paragraph_shading(p, None)
         for r in p.runs:
             set_run_font(r, '黑体', 'Times New Roman', 10.5, True)
@@ -137,11 +134,6 @@ for table in doc.tables[2:]:
                 header = OxmlElement('w:tblHeader')
                 header.set(qn('w:val'), 'true')
                 trpr.append(header)
-            # 表头与紧随其后的行保持同页，避免出现只有表头落在页底的情况
-            for cell in row.cells:
-                for p in cell.paragraphs:
-                    p.paragraph_format.keep_with_next = True
-
 doc.save(PATH)
 print(PATH)
 

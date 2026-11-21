@@ -53,7 +53,7 @@ def disable_heading_numbering(paragraph):
 
 def heading(text,level=1):
     style={1:'Heading 1',2:'Heading 2',3:'Heading 3'}.get(level,'Heading 2')
-    p=doc.add_paragraph(style=style); p.paragraph_format.keep_with_next=True
+    p=doc.add_paragraph(style=style)
     disable_heading_numbering(p)
     r=p.add_run(text); r.font.color.rgb=None
     return p
@@ -215,7 +215,7 @@ doc.add_page_break(); p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENT
 p=doc.add_paragraph(); p.paragraph_format.first_line_indent=Pt(0); p.paragraph_format.line_spacing=1.5
 add_toc_field(p)
 
-h1=heading('1 概述',1); h1.paragraph_format.page_break_before=True
+h1=heading('1 概述',1); 
 heading('1.1 背景',2)
 add_p('学校计算机实验室既承担课程实验，也支持竞赛训练、创新项目和学生自主实践。实验室的开放时间、可容纳人数和设备条件存在差异。当前依赖口头询问或人工登记的预约方式容易出现信息不同步、时段冲突和责任记录不完整等问题。校园实验室预约管理系统将统一维护实验室资源及可预约时段，使申请、审核、签到和使用结果形成可追踪的业务闭环。')
 heading('1.2 建设目标',2)
@@ -257,7 +257,7 @@ heading('2.3 整体业务规则',2)
 add_p('系统首先依据用户身份确定其可执行的业务。申请人在查询实验室和可预约时段后提交预约。系统应检查实验室开放状态、人数上限和时段冲突。校验通过后，预约申请进入待审核状态；管理员依据用途、时段和管理要求给出通过或驳回结果。已通过的预约可以签到并最终登记使用结果。取消、驳回和完成均应保留历史记录，不得直接删除。')
 picture('01_预约业务子系统用例图.png','图1 预约业务子系统用例图（源文件 01_预约业务子系统用例图.puml）',15.5)
 
-h3=heading('3 用例字典',1); h3.paragraph_format.page_break_before=True
+h3=heading('3 用例字典',1); 
 add_p('用例字典覆盖预约业务子系统的六个用例。条目字段包括用例名称、参与者、目标、前置条件、后置条件、基本流与备选流；UC03 的完整描述见 4.1。')
 usecases=[
  ['UC03','提交预约申请','学生、教师',
@@ -456,7 +456,7 @@ add_p('[1] 王健雄, 冯元勇. 面向对象分析与设计实验指导书 V202
 add_p('[2] Object Management Group. OMG Unified Modeling Language Version 2.5.1[EB/OL]. https://www.omg.org/spec/UML/2.5.1, 2017[2026-11-13].',indent=False)
 add_p('[3] PlantUML. PlantUML Language Reference Guide[EB/OL]. https://plantuml.com/, 2026[2026-11-13].',indent=False)
 
-happ=heading('附录 A  PlantUML 源文件清单',1); happ.paragraph_format.page_break_before=True
+happ=heading('附录 A  PlantUML 源文件清单',1); 
 add_p('四个模型源文件随仓库提交，仓库名为学号 32406300118，路径为 diagrams/；报告中的图 1 至图 4 均由下列源文件渲染。手工模型在活动 2 开启前已完成入库，提交时间以仓库记录为准。')
 add_p('渲染命令为 java -jar plantuml.jar -charset UTF-8 -tpng，可用 build/render_diagrams.ps1 一键重建；状态图与用例图在后续提交中有修订，修订说明见提交记录。')
 table(['源文件','图号','首次提交','最新提交'],[

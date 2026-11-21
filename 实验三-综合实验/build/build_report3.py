@@ -76,7 +76,6 @@ def add_p(text='', style=None, center=False, indent=True):
 def heading(text, level=1):
     style = {1: 'Heading 1', 2: 'Heading 2', 3: 'Heading 3'}.get(level, 'Heading 2')
     p = doc.add_paragraph(style=style)
-    p.paragraph_format.keep_with_next = True
     disable_heading_numbering(p)
     r = p.add_run(text)
     r.font.color.rgb = None
@@ -111,13 +110,6 @@ def table(headers, rows, widths=None):
         for row in t.rows:
             for i, w in enumerate(widths):
                 row.cells[i].width = Cm(w)
-    for row in t.rows:
-        trPr = row._tr.get_or_add_trPr()
-        if trPr.find(qn('w:cantSplit')) is None:
-            trPr.append(OxmlElement('w:cantSplit'))
-    for cell in t.rows[0].cells:
-        for p in cell.paragraphs:
-            p.paragraph_format.keep_with_next = True
     doc.add_paragraph()
     return t
 
@@ -143,7 +135,7 @@ def code_list(fname):
     for line in (DIAG / fname).read_text(encoding='utf-8').splitlines():
         cp = doc.add_paragraph()
         cp.paragraph_format.first_line_indent = Pt(0)
-        cp.paragraph_format.line_spacing = 1.0
+        cp.paragraph_format.line_spacing = 0.95
         cp.paragraph_format.space_after = Pt(0)
         cr = cp.add_run(line if line else ' ')
         cr.font.name = 'Consolas'
@@ -256,8 +248,7 @@ for p in front:
     p._p.getparent().remove(p._p)
 for p in doc.paragraphs:
     if p.style is not None and p.style.name == '知识点':
-        p.paragraph_format.keep_with_next = True
-
+    
 # ---------------- 删除模板示例主体 ----------------
 body = doc._body._element
 start = None
@@ -530,13 +521,13 @@ for label, fname in [('C.1 逻辑视图：核心类图（对应图 12）', 'ai3_
     for line in (DIAG / fname).read_text(encoding='utf-8').splitlines():
         cp = doc.add_paragraph()
         cp.paragraph_format.first_line_indent = Pt(0)
-        cp.paragraph_format.line_spacing = 1.0
+        cp.paragraph_format.line_spacing = 0.95
         cp.paragraph_format.space_after = Pt(0)
         cr = cp.add_run(line if line else ' ')
         cr.font.name = 'Consolas'
         cr._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '宋体')
         cr.font.size = Pt(8)
-    add_p('')
+    doc.add_paragraph()
 
 happ_b = heading('附录 B  原型附件', 1)
 add_p('B.1 建表语句（核心三张表）', indent=False)
@@ -571,7 +562,7 @@ SQL = [
 for line in SQL:
     cp = doc.add_paragraph()
     cp.paragraph_format.first_line_indent = Pt(0)
-    cp.paragraph_format.line_spacing = 1.0
+    cp.paragraph_format.line_spacing = 0.95
     cp.paragraph_format.space_after = Pt(0)
     cr = cp.add_run(line)
     cr.font.name = 'Consolas'
@@ -603,7 +594,7 @@ REQ = [
 for line in REQ:
     cp = doc.add_paragraph()
     cp.paragraph_format.first_line_indent = Pt(0)
-    cp.paragraph_format.line_spacing = 1.0
+    cp.paragraph_format.line_spacing = 0.95
     cp.paragraph_format.space_after = Pt(0)
     cr = cp.add_run(line if line else ' ')
     cr.font.name = 'Consolas'
@@ -622,7 +613,7 @@ CON = [
 for line in CON:
     cp = doc.add_paragraph()
     cp.paragraph_format.first_line_indent = Pt(0)
-    cp.paragraph_format.line_spacing = 1.0
+    cp.paragraph_format.line_spacing = 0.95
     cp.paragraph_format.space_after = Pt(0)
     cr = cp.add_run(line)
     cr.font.name = 'Consolas'
